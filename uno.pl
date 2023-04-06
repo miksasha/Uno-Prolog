@@ -1,42 +1,69 @@
-% Define the initial game state
-game_state(game_state(Player1Hand, Player2Hand, DiscardPile, CurrentPlayer)) :-
-  % Define the starting hand for each player
-  initial_hands(Player1Hand, Player2Hand),
-  % Define the discard pile as empty
-  DiscardPile = [],
-  % Define the starting player as player 1
-  CurrentPlayer = 1.
+deck(Cards) :-
+    findall(card(Color, Value), (color(Color), value(Value)), Cards).
 
-% Define the initial hand for each player
-initial_hands(Player1Hand, Player2Hand) :-
-  % Draw 7 cards for each player
-  draw_cards(7, Player1Hand, RemainingDeck),
-  draw_cards(7, Player2Hand, RemainingDeck).
 
-% Define the rules for playing a card
-play_card(Color, Value, game_state(Player1Hand, Player2Hand, [TopCard|DiscardPile], CurrentPlayer), game_state(NewPlayer1Hand, NewPlayer2Hand, [NewCard|NewDiscardPile], NewCurrentPlayer)) :-
-  % Check if the card is a valid play
-  is_valid_play(Color, Value, TopCard, Player1Hand),
-  % Update the player's hand with the played card removed
-  remove_card(Color, Value, Player1Hand, NewPlayer1Hand),
-  % Add the played card to the discard pile
-  NewCard = card(Color, Value),
-  % Check if the player has won
-  check_for_win(NewPlayer1Hand, Player2Hand, NewCurrentPlayer),
-  % Switch to the next player
-  next_player(game_state(NewPlayer1Hand, Player2Hand, [NewCard|DiscardPile], 2), game_state(NewPlayer1Hand, NewPlayer2Hand, NewDiscardPile, 2)).
+shuffle([], []).
+shuffle(List, Shuffled) :-
+    length(List, Length),
+    random_permutation(List, Shuffled),
+    length(Shuffled, Length).
 
-% Define the rules for drawing a card
-draw_card(game_state(Player1Hand, Player2Hand, [TopCard|DiscardPile], CurrentPlayer), game_state(NewPlayer1Hand, Player2Hand, [NewTopCard|DiscardPile], CurrentPlayer)) :-
-  % Check if the player is allowed to draw a card
-  can_draw_card(TopCard, Player1Hand),
-  % Draw a card from the deck
-  draw_card(Player1Hand, RemainingDeck, NewCard),
-  % Add the new card to the player's hand
-  append(NewPlayer1Hand, [NewCard], RemainingDeck),
-  % Update the top card on the discard pile
-  NewTopCard = NewCard.
+findAllValidMoves(PlayerCards, card(TopColor, TopValue), ValidMoves) :-
+    findall(card(Color, Value), (
+         member(card(Color, Value), PlayerCards),
+    (Value = wild ; Value = wild_draw4 ;(Value= TopValue, Color\= TopColor); (Color= TopColor))
+    ), ValidMoves).
+hasValidMove(PlayerCards, card(TopColor, TopValue)) :-
+    member(card(Color, Value), PlayerCards),
+    (Value = wild ; Value = wild_draw4 ; Value= TopValue ; Color= TopColor).
 
-% Define the rules for switching to the next player
-next_player(game_state(Player1Hand, Player2Hand, DiscardPile, 1), game_state(Player1Hand, Player2Hand, DiscardPile, 2)).
-next_player(game_state(Player1Hand, Player2Hand, DiscardPile, 2), game_state(Player1Hand, Player2Hand, DiscardPile, 1)).
+color(red).
+color(yellow).
+color(green).
+color(blue).
+
+value(0).
+value(1).
+value(2).
+value(3).
+value(4).
+value(5).
+value(6).
+value(7).
+value(8).
+value(9).
+value(draw2).
+value(reverse).
+value(skip).
+value(wild).
+value(wild_draw4).
+nextPlayer(NextPlayer, [NextPlayer,Player2], Player2).
+nextPlayer(NextPlayer, [Player1,NextPlayer], Player1).
+
+% Deal cards to players
+dealCards([], _, _, []).
+dealCards([Player|Players], Cards, N, [PlayerCards|PlayerHands]) :-
+    length(PlayerCards, N),
+    append(PlayerCards, RestCards, Cards),
+    dealCards(Players, RestCards, N, PlayerHands).
+removeCard(Card, [Card|Rest], Rest).
+removeCard(Card, [Other|Rest], [Other|NewRest]) :-
+    removeCard(Card, Rest, NewRest).
+matches(card(c1,c11), card(c2, c22)) :-
+    c1=c2, c11=c22.
+addToDiscardPile(Card, DiscardPile, [Card|DiscardPile]).
+isWild(Card) :-
+    Card = card(_,wild);Card= card(_,wild_draw4).
+setTopCard(TopCard, DiscardPile, [TopCard|Rest]) :-
+    removeCard(TopCard, DiscardPile, Rest).
+isEmpty([]).
+setWinner(Player1, _, Player2, Player1) :-
+    isEmpty(Player2).
+setWinner(_, _, Player2, Player2).
+
+evaluateCard((card(a,b)), CurrentPlayer, (card(topa,topb)), Value) :-
+        true.
+
+%видача верхньої карти з колоди
+topCard([Top|_],Res):-
+    Res = Top.

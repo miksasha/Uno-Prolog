@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <script type="text/javascript" src="node_modules/tau-prolog/taupl.js"></script>
+    <script type="text/javascript" src="node_modules/tau-prolog/modules/core.js"></script>
+    <script type="text/javascript" src="node_modules/tau-prolog/modules/dom.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/vis/4.21.0/vis.min.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/vis/4.21.0/vis.min.css" rel="stylesheet" type="text/css" />
+    <script src="BoardGameLogic.js"></script>
+    <link rel="stylesheet" href="Board.css">
+    <title>UNO gamer - comp</title>
+</head>
+<body onload="putSevenCardsOnTable()">
+    <div class="board">
+        <div class="left_part">
+            <div class="comp_board">
+                <img class="closing_comp_cards" src="images/closing_card.png">
+                <img class="closing_comp_cards" src="images/closing_card.png">
+                <img class="closing_comp_cards" src="images/closing_card.png">
+                <img class="closing_comp_cards" src="images/closing_card.png">
+                <img class="closing_comp_cards" src="images/closing_card.png">
+                <img class="closing_comp_cards" src="images/closing_card.png">
+                <img class="closing_comp_cards" src="images/closing_card.png">
+            </div>
+            <div class="playing_field">
+                <img onclick="getCardFromDeck()" id="deck" src="images/deck.png">
+                <img id="current_card" src="images/1_blue.png">
+            </div>
+            <div id="gamer_board" class="gamer_board"></div>
+        </div>
+        <div class="right_part">
+            <button onclick="UNO()">UNO</button>
+            <button onclick="finishTheStep()">Закінчити хід</button>
+        </div>
+    </div>
+
+</body>
+</html>

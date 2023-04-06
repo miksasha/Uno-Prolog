@@ -1,35 +1,25 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <link rel="stylesheet" href="styles.css">
-  <title>Tau-Prolog</title>
   <script type="text/javascript" src="node_modules/tau-prolog/taupl.js"></script>
   <script type="text/javascript" src="node_modules/tau-prolog/modules/core.js"></script>
   <script type="text/javascript" src="node_modules/tau-prolog/modules/dom.js"></script>
   <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/vis/4.21.0/vis.min.js"></script>
   <link href="https://cdnjs.cloudflare.com/ajax/libs/vis/4.21.0/vis.min.css" rel="stylesheet" type="text/css" />
+  <link rel="stylesheet" href="MainScreen.css">
+  <title>Menu</title>
 </head>
-<body>
-<header>
-  <h1>UNO Game</h1>
-</header>
-<div id="game-board">
-  <!-- The game board will go here -->
-</div>
-<div id="player-hand">
-  <!-- The player's hand will go here -->
-</div>
-<div id="draw-pile">
-  <!-- The draw pile will go here -->
-</div>
-<div id="discard-pile">
-  <!-- The discard pile will go here -->
-</div>
-<div id="player-score">
-  <!-- The player's score will go here -->
-</div>
+<body  class="menu">
+  <h1>Menu UNO</h1>
+  <h2>Choose mode of game</h2>
+  <div class="gameMode">
+    <button onclick="window.location.href = 'BoardGamerComp.html'" class="modeButton">Gamer - computer</button>
+    <button onclick="window.location.href = 'board.html'" class="modeButton">Computer - computer</button>
+  </div>
+  <button onclick="window.location.href = 'board.html'" class="rulesButton">Rules</button>
 
-<script type="text/javascript">
+
+<!--script type="text/javascript">
   // Select the game board element
   const gameBoard = document.getElementById('game-board');
 
@@ -127,7 +117,7 @@
     }
   });
 
-</script>
+</script-->
 
 </body>
 </html>

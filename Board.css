@@ -1,0 +1,48 @@
+body{
+    background: #016300;
+    position: relative;
+    height: 100vh;
+    margin: 0;
+}
+
+.board{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.left_part{
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    height: 100vh;
+}
+
+.right_part{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+
+    position: absolute;
+    top: 50%;
+    right: 0;
+    margin-top: -0.625em;
+}
+
+img{
+    width: 100px;
+    height: auto;
+}
+
+button{
+    margin-top: 2vh;
+    height: 5vh;
+    border-color: #FFFFFF;
+    background: transparent;
+    color: #FFFFFF;
+}
+
+button:hover{
+    background: rgba(231, 231, 231, 0.55);
+}
