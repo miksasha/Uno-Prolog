@@ -61,9 +61,49 @@ setWinner(Player1, _, Player2, Player1) :-
     isEmpty(Player2).
 setWinner(_, _, Player2, Player2).
 
-evaluateCard((card(a,b)), CurrentPlayer, (card(topa,topb)), Value) :-
-        true.
 
-%видача верхньої карти з колоди
-topCard([Top|_],Res):-
-    Res = Top.
+
+
+choose_move(PlayerCards, OpponentCards, TopCard, DiscardPile, Player, Depth, Move) :-
+    findAllValidMoves(PlayerCards, TopCard, ValidMoves),
+    alpha_beta(PlayerCards, OpponentCards, TopCard, DiscardPile, ValidMoves, Depth, -1000, 1000, _, BestScore),
+    findall(M, (
+        member(M, ValidMoves),
+        make_move(PlayerCards, OpponentCards, TopCard, DiscardPile, M, _, _, NewTopCard, NewDiscardPile),
+        alpha_beta(OpponentCards, PlayerCards, NewTopCard, NewDiscardPile, [], 1, -1000, 1000, _, OpponentScore),
+        Score is -OpponentScore,
+        Score =:= BestScore
+    ), PossibleMoves),
+    length(PossibleMoves, NumPossibleMoves),
+    random(0, NumPossibleMoves, Index),
+    nth0(Index, PossibleMoves, Move).
+alpha_beta(_, _, _, _, [], _, _, _, BestMove, BestScore) :-
+    BestMove = none,
+    BestScore = 0.
+
+alpha_beta(PlayerCards, OpponentCards, TopCard, DiscardPile, ValidMoves, Depth, Alpha, Beta, BestMove, BestScore) :-
+    Depth > 0,
+    Alpha < Beta,
+    NextDepth is Depth - 1,
+    nextPlayer(Opponent, [PlayerCards, OpponentCards], _),
+    find_best_move(PlayerCards, OpponentCards, TopCard, DiscardPile, ValidMoves, NextDepth, Alpha, Beta, Opponent, _, BestScore),
+    BestScore1 is -BestScore,
+    update_best_move(ValidMoves, BestScore1, none, _, Alpha, Beta, BestMove, BestScore2),
+    BestScore is -BestScore2.
+
+
+alpha_beta(PlayerCards, OpponentCards, TopCard, DiscardPile, ValidMoves, Depth, Alpha, Beta, _, BestScore) :-
+    Depth =< 0,
+    evaluate(PlayerCards, OpponentCards, TopCard, DiscardPile, Score),
+    BestScore = Score.
+
+
+evaluate(PlayerCards, OpponentCards, TopCard, DiscardPile, Score) :-
+    length(PlayerCards, PlayerCardCount),
+    length(OpponentCards, OpponentCardCount),
+    % Calculate the score as the difference between the player's card count and the opponent's card count
+    Score is PlayerCardCount - OpponentCardCount.
+
+
+
+find_best_move(_, _, _, _, [], _, _, _, _, BestScore, BestScore).

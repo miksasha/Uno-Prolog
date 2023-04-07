@@ -11,6 +11,61 @@
     <script src="uno.pl"></script>
     <link rel="stylesheet" href="Board.css">
     <title>UNO gamer - comp</title>
+
+    <script type="text/prolog" id="unotest.pl">
+deck(Cards) :-
+    findall(card(Color, Value), (color(Color), value(Value)), Cards), write(Cards).
+
+topCard([Card|_],Card):-
+    write(Card).
+
+
+shuffle([], []).
+shuffle(List, Shuffled) :-
+    length(List, Length),
+    random_permutation(List, Shuffled),
+    length(Shuffled, Length), write(Shuffled).
+
+% Deal cards to players
+dealCards([], _, _, []).
+dealCards([_|Players], Cards, N, [PlayerCards|PlayerHands]) :-
+    length(PlayerCards, N),
+    append(PlayerCards, RestCards, Cards),
+    dealCards(Players, RestCards, N, PlayerHands).
+dealCardsRes(Players, Cards, N, PlayerCards):-
+    dealCards(Players, Cards, N, PlayerCards), write(PlayerCards).
+findAllValidMoves(PlayerCards, card(TopColor, TopValue), ValidMoves) :-
+    findall(card(Color, Value), (
+         member(card(Color, Value), PlayerCards),
+    (Value = wild ; Value = wild_draw4 ;(Value= TopValue, Color\= TopColor); (Color= TopColor))
+    ), ValidMoves).
+hasValidMove(PlayerCards, card(TopColor, TopValue)) :-
+    member(card(Color, Value), PlayerCards),
+    (Value = wild ; Value = wild_draw4 ; Value= TopValue ; Color= TopColor).
+
+color(red).
+color(yellow).
+color(green).
+color(blue).
+
+value(0).
+value(1).
+value(2).
+value(3).
+value(4).
+value(5).
+value(6).
+value(7).
+value(8).
+value(9).
+value(draw2).
+value(reverse).
+value(skip).
+value(wild).
+value(wild_draw4).
+nextPlayer(NextPlayer, [NextPlayer,Player2], Player2).
+nextPlayer(NextPlayer, [Player1,NextPlayer], Player1).
+    </script>
 </head>
 <body onload="putSevenCardsOnTable()">
     <div class="board">
