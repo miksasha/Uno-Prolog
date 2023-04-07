@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="Board.css">
+    <script src="BoardGameCompLogic.js"></script>
+    <title>UNO comp - comp</title>
+</head>
+<body onload="purSevenCardsOnTable()">
+    <div class="board">
+        <div class="left_part">
+            <div class="comp_first_board"></div>
+            <div class="playing_field">
+                <img id="deck" src="images/deck.png">
+                <img id="current_card" src="images/1_blue.png">
+            </div>
+            <div id="comp_two_board" class="gamer_board"></div>
+        </div>
+        <div class="right_part">
+            <button onclick="UNO()">UNO</button>
+            <button onclick="finishTheStep()">Закінчити хід</button>
+        </div>
+    </div>
+
+</body>
+</html>

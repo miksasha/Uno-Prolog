@@ -46,3 +46,26 @@ button{
 button:hover{
     background: rgba(231, 231, 231, 0.55);
 }
+
+#popup_chose_color{
+    width: 30%;
+    height: 15%;
+    background: #016300;
+    border: 2px solid white;
+
+    position: absolute;
+    top: 30%;
+    left: 80%;
+    transform: translate(-50%,-50%);
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+
+    visibility: hidden;
+}
+
+#popup_chose_color button{
+    margin-top: 0;
+}

@@ -33,13 +33,13 @@ function putSevenCardsOnTable(){
 
 function getCardFromDeck(){
     const session = pl.create();
-    session.consult("uno.pl");
+    session.consult("D:/Prolog/Tau-Prolog/uno.pl");
 
     // Get the deck of cards using deck/1 predicate
     const queryDeck = "deck(Deck).";
     session.query(queryDeck);
     const resultDeck = session.answer();
-    const deck = resultDeck.list.Deck;
+    const deck = resultDeck.list;
 
     const queryTopCard = `topCard(${JSON.stringify(deck)}, TopCard).`;
     session.query(queryTopCard);
@@ -105,4 +105,15 @@ function finishTheStep(){
     checkUNO = false;
 
     //починає працювати комп
+}
+
+function popUpChooseColor(){
+    let popUp = document.getElementById('popup_chose_color');
+    popUp.style.visibility = "visible";
+}
+
+function chooseColor(valueOfColor){
+    let popUp = document.getElementById('popup_chose_color');
+    popUp.style.visibility = "hidden";
+    return valueOfColor;
 }

@@ -8,6 +8,7 @@
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/vis/4.21.0/vis.min.js"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/vis/4.21.0/vis.min.css" rel="stylesheet" type="text/css" />
     <script src="BoardGameLogic.js"></script>
+    <script src="uno.pl"></script>
     <link rel="stylesheet" href="Board.css">
     <title>UNO gamer - comp</title>
 </head>
@@ -33,6 +34,13 @@
             <button onclick="UNO()">UNO</button>
             <button onclick="finishTheStep()">Закінчити хід</button>
         </div>
+    </div>
+
+    <div id="popup_chose_color">
+        <button onclick="chooseColor('Жовтий')">Жовтий</button>
+        <button onclick="chooseColor('Червоний')">Червоний</button>
+        <button onclick="chooseColor('Зелений')">Зелений</button>
+        <button onclick="chooseColor('Синій')">Синій</button>
     </div>
 
 </body>
