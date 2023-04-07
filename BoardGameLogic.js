@@ -105,6 +105,23 @@ function finishTheStep(){
     checkUNO = false;
 
     //починає працювати комп
+
+    //дія компа
+    let stepOfTheComp = true;//true якщо комп ходить картою, false якщо берез колоди карту
+    let compCards = document.getElementById('comp_board');
+    if(stepOfTheComp){
+        let lastChild = compCards.lastChild;
+        compCards.removeChild(lastChild);
+        if(compCards.childElementCount === 0){
+            alert("Комп'ютер переміг! Вам повезе наступного разу");
+            window.location.href = "index.html";
+        }
+    }else{
+        let card = document.createElement('img');
+        card.setAttribute('class', 'closing_comp_cards');
+        card.setAttribute('src', 'images/closing_card.png');
+        compCards.appendChild(card);
+    }
 }
 
 function popUpChooseColor(){
