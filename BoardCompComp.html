@@ -5,20 +5,89 @@
     <link rel="stylesheet" href="Board.css">
     <script src="BoardGameCompLogic.js"></script>
     <title>UNO comp - comp</title>
+    <script type="text/javascript" src="node_modules/tau-prolog/taupl.js"></script>
+    <script type="text/javascript" src="node_modules/tau-prolog/modules/core.js"></script>
+    <script type="text/javascript" src="node_modules/tau-prolog/modules/dom.js"></script>
+    <script type="text/javascript" src="node_modules/tau-prolog/modules/lists.js"></script>
+    <script type="text/javascript" src="node_modules/tau-prolog/modules/random.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/vis/4.21.0/vis.min.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/vis/4.21.0/vis.min.css" rel="stylesheet" type="text/css" />
+
+    <script src="uno.pl"></script>
+    <script type="text/prolog" id="unotest.pl">
+    :- use_module(library(lists)).
+    :- use_module(library(random)).
+    :- use_module(library(dom)).
+deck(Cards) :-
+    findall(card(Color, Value), (color(Color), value(Value)), Cards).
+
+topCard([Card|_],Card).
+
+shuffle([], []).
+shuffle(List, Shuffled) :-
+    length(List, Length),
+    random_permutation(List, Shuffled),
+    length(Shuffled, Length).
+
+length([]     , 0 ).
+length([_|Xs] , L ) :- length(Xs,N) , L is N+1 .
+
+append([], L2, L2).
+append([X | L1], L2, [X | L]) :- append(L1, L2, L).
+
+% Deal cards to players
+dealCards([], _, _, []).
+dealCards([_|Players], Cards, N, [PlayerCards|PlayerHands]) :-
+    length(PlayerCards, N),
+    append(PlayerCards, RestCards, Cards),
+    dealCards(Players, RestCards, N, PlayerHands).
+dealCardsRes(Players, Cards, N, PlayerCards):-
+    dealCards(Players, Cards, N, PlayerCards).
+findAllValidMoves(PlayerCards, card(TopColor, TopValue), ValidMoves) :-
+    findall(card(Color, Value), (
+         member(card(Color, Value), PlayerCards),
+    (Value = wild ; Value = wild-draw4 ;(Value= TopValue, Color\= TopColor); (Color= TopColor))
+    ), ValidMoves).
+hasValidMove(PlayerCards, card(TopColor, TopValue)) :-
+    member(card(Color, Value), PlayerCards),
+    (Value = wild ; Value = wild-draw4 ; Value= TopValue ; Color= TopColor).
+
+color(red).
+color(yellow).
+color(green).
+color(blue).
+
+value(0).
+value(1).
+value(2).
+value(3).
+value(4).
+value(5).
+value(6).
+value(7).
+value(8).
+value(9).
+value(draw2).
+value(reverse).
+value(skip).
+value(wild).
+value(wild-draw4).
+nextPlayer(NextPlayer, [NextPlayer,Player2], Player2).
+nextPlayer(NextPlayer, [Player1,NextPlayer], Player1).
+    </script>
 </head>
-<body onload="purSevenCardsOnTable()">
+<body onload="getSevenCardsToComps()">
     <div class="board">
         <div class="left_part">
-            <div class="comp_first_board"></div>
+            <div id="comp_first_board" class="comp_first_board"></div>
             <div class="playing_field">
                 <img id="deck" src="images/deck.png">
-                <img id="current_card" src="images/1_blue.png">
+                <img id="current_card" src="images/_.png">
             </div>
-            <div id="comp_two_board" class="gamer_board"></div>
+            <div id="comp_second_board" class="comp_second_board"></div>
         </div>
         <div class="right_part">
-            <button onclick="UNO()">UNO</button>
-            <button onclick="finishTheStep()">Закінчити хід</button>
+            <button onclick="moveToNextPlayer()">Наступний хід</button>
         </div>
     </div>
 

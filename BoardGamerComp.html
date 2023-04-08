@@ -52,6 +52,25 @@ hasValidMove(PlayerCards, card(TopColor, TopValue)) :-
     member(card(Color, Value), PlayerCards),
     (Value = wild ; Value = wild-draw4 ; Value= TopValue ; Color= TopColor).
 
+remove_list([], _, []).   % Base case: empty list has no elements to remove
+remove_list([X|Xs], Ys, Zs) :-
+    member(X, Ys),        % Check if X is in Ys
+    !,                    % Cut to prevent backtracking
+    remove_list(Xs, Ys, Zs). % If X is in Ys, continue with the rest of the list
+remove_list([X|Xs], Ys, [X|Zs]) :-  % If X is not in Ys, include it in the result
+    remove_list(Xs, Ys, Zs).
+
+
+flatten_list([], []).              % Base case: empty list flattens to empty list
+flatten_list([X|Xs], Flat) :-
+    is_list(X),                    % If X is a list, flatten it recursively
+    flatten_list(X, FlatX),
+    flatten_list(Xs, FlatXs),
+    append(FlatX, FlatXs, Flat).
+flatten_list([X|Xs], [X|FlatXs]) :- % If X is not a list, include it in the flattened list
+    \+ is_list(X),
+    flatten_list(Xs, FlatXs).
+
 color(red).
 color(yellow).
 color(green).
@@ -101,10 +120,10 @@ nextPlayer(NextPlayer, [Player1,NextPlayer], Player1).
     </div>
 
     <div id="popup_chose_color">
-        <button onclick="chooseColor('Жовтий')">Жовтий</button>
-        <button onclick="chooseColor('Червоний')">Червоний</button>
-        <button onclick="chooseColor('Зелений')">Зелений</button>
-        <button onclick="chooseColor('Синій')">Синій</button>
+        <button onclick="chooseColor('yellow')">Жовтий</button>
+        <button onclick="chooseColor('red')">Червоний</button>
+        <button onclick="chooseColor('green')">Зелений</button>
+        <button onclick="chooseColor('blue')">Синій</button>
     </div>
 
 </body>
