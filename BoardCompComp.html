@@ -43,14 +43,82 @@ dealCards([_|Players], Cards, N, [PlayerCards|PlayerHands]) :-
     dealCards(Players, RestCards, N, PlayerHands).
 dealCardsRes(Players, Cards, N, PlayerCards):-
     dealCards(Players, Cards, N, PlayerCards).
+
 findAllValidMoves(PlayerCards, card(TopColor, TopValue), ValidMoves) :-
     findall(card(Color, Value), (
          member(card(Color, Value), PlayerCards),
     (Value = wild ; Value = wild-draw4 ;(Value= TopValue, Color\= TopColor); (Color= TopColor))
     ), ValidMoves).
+findAllValidMoves(PlayerCards, card(_, TopValue), ValidMoves) :-
+    findall(card(Color, Value), (
+         member(card(Color, Value), PlayerCards),
+    (Value = wild ; Value = wild-draw4 ;Value= TopValue)
+    ), ValidMoves).
+
 hasValidMove(PlayerCards, card(TopColor, TopValue)) :-
     member(card(Color, Value), PlayerCards),
     (Value = wild ; Value = wild-draw4 ; Value= TopValue ; Color= TopColor).
+
+remove_list([], _, []).   % Base case: empty list has no elements to remove
+remove_list([X|Xs], Ys, Zs) :-
+    member(X, Ys),        % Check if X is in Ys
+    !,                    % Cut to prevent backtracking
+    remove_list(Xs, Ys, Zs). % If X is in Ys, continue with the rest of the list
+remove_list([X|Xs], Ys, [X|Zs]) :-  % If X is not in Ys, include it in the result
+    remove_list(Xs, Ys, Zs).
+
+
+flatten_list([], []).              % Base case: empty list flattens to empty list
+flatten_list([X|Xs], Flat) :-
+    is_list(X),                    % If X is a list, flatten it recursively
+    flatten_list(X, FlatX),
+    flatten_list(Xs, FlatXs),
+    append(FlatX, FlatXs, Flat).
+flatten_list([X|Xs], [X|FlatXs]) :- % If X is not a list, include it in the flattened list
+    \+ is_list(X),
+    flatten_list(Xs, FlatXs).
+
+    % find the best move for the current player using alpha-beta pruning
+findBestMove(PlayerCards, OpponentCards, TopCard, Depth, Alpha, Beta, BestScore, BestMove) :-
+    findAllValidMoves(PlayerCards, TopCard, ValidMoves),
+    evaluateMoves(PlayerCards, OpponentCards, TopCard, ValidMoves, Depth, Alpha, Beta, BestScore, BestMove).
+
+% evaluate all the possible moves and return the best one
+evaluateMoves(_, _, _, [], _, Alpha, _, Alpha, _) :- !. % stop searching if alpha is greater than beta
+evaluateMoves(_, _, _, _, 0, _, _, Score, _) :- Score is 0, !. % stop searching if we have reached the maximum depth
+evaluateMoves(PlayerCards, OpponentCards, TopCard, [Move|ValidMoves], Depth, Alpha, Beta, BestScore, BestMove) :-
+    evaluateMove(PlayerCards, TopCard, Move, Score),
+    NewDepth is Depth - 1,
+    (Score > Alpha, !, NewAlpha = Score; NewAlpha = Alpha),
+    (NewAlpha >= Beta, BestScore = NewAlpha, BestMove = Move, !;
+    evaluateMoves(PlayerCards, OpponentCards, TopCard, ValidMoves, NewDepth, NewAlpha, Beta, Score2, Move2),
+    (NewAlpha >= Score2, BestScore = NewAlpha, BestMove = Move, !;
+    BestScore = Score2, BestMove = Move2)).
+
+% evaluate a single move
+evaluateMove(PlayerCards, card(TopColor, _), CardToPLay, Score) :-
+member(CardToPLay, PlayerCards),
+(
+CardToPLay = card(Color, Value),
+(
+Value = wild, Score is 1;
+Value = wild-draw4, Score is 2;
+member(card(Color1, Value), PlayerCards),
+    ( Color1\=Color, Score is 60 )
+    ;
+member(card(Color, Value1), PlayerCards),
+    ( Value\=Value1, Score is 50 )
+    ;
+Color = TopColor, Score is Value + 10;
+Score is Value + 3
+);
+CardToPLay = card(Color, draw2), Score is 25;
+CardToPLay = card(Color, skip), Score is 40
+),
+!.
+% count the number of cards in a list
+countCards([], 0).
+countCards([_|T], Count) :- countCards(T, Count1), Count is Count1 + 1.
 
 color(red).
 color(yellow).
