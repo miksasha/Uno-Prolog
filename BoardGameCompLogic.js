@@ -110,6 +110,15 @@ function moveToNextPlayer() {
                 console.log("bestCard "+bestCard)
                 console.log("comp0Cards "+comp0Cards)
                 //['yellow', '0']
+                let tem = [];
+                for(let i =0; i<allValidMoves.length; i++){
+                    if(allValidMoves[i]==="" || allValidMoves[i]===" "){
+
+                    }else{
+                        tem.push(allValidMoves[i]);
+                    }
+                }
+                allValidMoves=tem;
                 if (allValidMoves.length > 0) {
                     currentCard = bestCard;
                     for (let i = 0; i < comp0Cards.length; i++) {
@@ -185,6 +194,15 @@ function moveToNextPlayer() {
                 console.log("bestCard "+bestCard)
                 console.log("comp0Cards "+comp1Cards)
                 //['yellow', '0']
+                let tem = [];
+                for(let i =0; i<allValidMoves.length; i++){
+                    if(allValidMoves[i]==="" || allValidMoves[i]===" "){
+
+                    }else{
+                        tem.push(allValidMoves[i]);
+                    }
+                }
+                allValidMoves=tem;
                 if (allValidMoves.length > 0) {
                     currentCard = bestCard;
                     for (let i = 0; i < comp1Cards.length; i++) {

@@ -109,13 +109,15 @@ member(card(Color1, Value), PlayerCards),
 member(card(Color, Value1), PlayerCards),
     ( Value\=Value1, Score is 50 )
     ;
-Color = TopColor, Score is Value + 10;
-Score is Value + 3
+Color = TopColor, Value\= reverse, Value\= skip, Value\= draw2, Score is Value + 10;
+Value\= reverse, Value\= skip, Value\= draw2, Score is Value + 3
 );
 CardToPLay = card(Color, draw2), Score is 25;
-CardToPLay = card(Color, skip), Score is 40
+CardToPLay = card(Color, skip), Score is 40;
+CardToPLay = card(Color, reverse), Score is 10
 ),
 !.
+
 % count the number of cards in a list
 countCards([], 0).
 countCards([_|T], Count) :- countCards(T, Count1), Count is Count1 + 1.
